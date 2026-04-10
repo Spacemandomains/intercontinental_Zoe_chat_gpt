@@ -1,0 +1,31 @@
+[
+  {
+    "id": "guide-colombia",
+    "type": "guide",
+    "title": "Colombia Destination Guide",
+    "description": "Zoe's complete Colombia guide: Medellín, Cartagena, Bogotá, and the coffee region. Safety, neighborhoods, food, cost of living, and long-stay tips.",
+    "price": { "amount": 29, "currency": "USD" },
+    "url": "https://zoe-shop.example.com/products/colombia-guide",
+    "platform": "shopify",
+    "destinationIds": ["colombia"]
+  },
+  {
+    "id": "guide-philippines",
+    "type": "guide",
+    "title": "Philippines Destination Guide",
+    "description": "Island-hopping, domestic flights, Siargao, Palawan, and Cebu — everything Zoe wishes she'd known before her first trip.",
+    "price": { "amount": 29, "currency": "USD" },
+    "url": "https://zoe-shop.example.com/products/philippines-guide",
+    "platform": "shopify",
+    "destinationIds": ["philippines"]
+  },
+  {
+    "id": "merch-tshirt",
+    "type": "merchandise",
+    "title": "Intercontinental Zoe T-Shirt",
+    "description": "Official tee. Soft cotton, unisex fit, ships worldwide.",
+    "price": { "amount": 32, "currency": "USD" },
+    "url": "https://zoe-shop.example.com/products/zoe-tshirt",
+    "platform": "shopify"
+  }
+]

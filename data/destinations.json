@@ -1,0 +1,48 @@
+[
+  {
+    "id": "colombia",
+    "name": "Colombia",
+    "country": "Colombia",
+    "region": "South America",
+    "continent": "South America",
+    "summary": "Zoe's extensive travels through Colombia — Medellín, Cartagena, Bogotá, the coffee region, and beyond. Covers safety, cost of living, food, nightlife, and long-stay tips.",
+    "highlights": [
+      "Medellín neighborhoods and comuna tours",
+      "Cartagena historic center and beach day trips",
+      "Eje Cafetero (coffee region) farm stays",
+      "Cost of living and digital nomad logistics"
+    ],
+    "bestTimeToVisit": "December – March (dry season)",
+    "playlistId": "REPLACE_WITH_COLOMBIA_PLAYLIST_ID",
+    "guideProductId": "guide-colombia",
+    "rentalProductIds": [],
+    "tips": [
+      "Use Uber or InDriver over street taxis in Medellín and Bogotá",
+      "Carry small pesos for street food and buses",
+      "Weekends in Cartagena are significantly more expensive than weekdays"
+    ]
+  },
+  {
+    "id": "philippines",
+    "name": "Philippines",
+    "country": "Philippines",
+    "region": "Southeast Asia",
+    "continent": "Asia",
+    "summary": "Zoe's Philippines coverage — Manila, Cebu, Palawan, Siargao. Island-hopping logistics, budgets, and where to base yourself for a month or more.",
+    "highlights": [
+      "Siargao surf and island day trips",
+      "El Nido and Coron in Palawan",
+      "Cebu City and Moalboal",
+      "Ferry and domestic flight planning"
+    ],
+    "bestTimeToVisit": "December – May (dry season)",
+    "playlistId": "REPLACE_WITH_PHILIPPINES_PLAYLIST_ID",
+    "guideProductId": "guide-philippines",
+    "rentalProductIds": [],
+    "tips": [
+      "Book inter-island ferries a day or two ahead, especially in high season",
+      "Cebu Pacific and AirAsia run the cheapest domestic flights",
+      "Cash is king outside Manila and Cebu City"
+    ]
+  }
+]

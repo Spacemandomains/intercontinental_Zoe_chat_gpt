@@ -1,0 +1,18 @@
+{
+  "options": [
+    {
+      "id": "paypal-tip",
+      "label": "Tip Zoe via PayPal",
+      "description": "Send a one-time tip of any amount to support Zoe's travels.",
+      "url": "https://www.paypal.com/paypalme/REPLACE_WITH_PAYPAL_HANDLE",
+      "type": "donation"
+    },
+    {
+      "id": "merch-shop",
+      "label": "Shop Merchandise",
+      "description": "Every t-shirt, sticker, and accessory directly funds the next trip.",
+      "url": "https://zoe-shop.example.com",
+      "type": "merch"
+    }
+  ]
+}
