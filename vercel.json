@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "echo 'intercontinental-zoe is an API-only project; Vercel compiles api/[...path].ts directly'",
+  "buildCommand": "mkdir -p public && test -f public/index.html || echo '<!doctype html><title>Intercontinental Zoe MCP</title><p>API-only. See <code>/healthz</code>, <code>/openapi.json</code>, <code>/mcp</code>, <code>/actions/:tool</code>.' > public/index.html",
   "outputDirectory": "public",
   "functions": {
     "api/[...path].ts": {
