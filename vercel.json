@@ -1,5 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "echo 'intercontinental-zoe is an API-only project; Vercel compiles api/[...path].ts directly'",
+  "outputDirectory": "public",
   "functions": {
     "api/[...path].ts": {
       "maxDuration": 60,
