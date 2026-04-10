@@ -22,7 +22,8 @@ export function registerGetVideoTranscript(server: McpServer, ctx: ToolContext):
       'Return the public caption transcript for a video in Zoe\'s catalog — returns both timestamped segments and a full-text version. Captions come from YouTube\'s public track; if none are available, returns notFound. Never invent transcript text.',
     inputSchema: getVideoTranscriptInput,
     handler: async ({ videoId, language }) => {
-      const video = ctx.catalog.byId.get(videoId);
+      const catalog = await ctx.ensureCatalog();
+      const video = catalog.byId.get(videoId);
       if (!video) {
         return notFoundResult(
           `Video "${videoId}" is not in Zoe\'s catalog.`,

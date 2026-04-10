@@ -43,9 +43,10 @@ export function registerListVideos(server: McpServer, ctx: ToolContext): void {
       "List videos from Intercontinental Zoe's unified travel catalog across all per-country playlists. Use destinationId to scope to a single country. Return only values from the server's canonical data — do not invent videos.",
     inputSchema: listVideosInput,
     handler: async (args) => {
-      let pool = ctx.catalog.videos;
+      const catalog = await ctx.ensureCatalog();
+      let pool = catalog.videos;
       if (args.destinationId) {
-        const bucket = ctx.catalog.byDestination.get(args.destinationId);
+        const bucket = catalog.byDestination.get(args.destinationId);
         if (!bucket) {
           return notFoundResult(
             `No destination with id "${args.destinationId}" is loaded in the canonical data.`,

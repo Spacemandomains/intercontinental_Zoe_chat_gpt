@@ -19,6 +19,9 @@ export function registerListDestinations(server: McpServer, ctx: ToolContext): v
         continent: args.continent,
       });
 
+      // Note: this handler deliberately does NOT touch ctx.catalog — it
+      // answers from canonical data only so it stays instant on serverless
+      // cold starts. Video counts are available via get_destination_overview.
       const destinations = filtered.slice(0, args.limit).map((d) => ({
         id: d.id,
         name: d.name,
@@ -28,7 +31,7 @@ export function registerListDestinations(server: McpServer, ctx: ToolContext): v
         summary: d.summary,
         highlights: d.highlights,
         bestTimeToVisit: d.bestTimeToVisit,
-        videoCount: ctx.catalog.byDestination.get(d.id)?.length ?? 0,
+        playlistId: d.playlistId,
         hasGuide: Boolean(d.guideProductId),
         rentalCount: ctx.data.products.filter(
           (p) => p.type === 'rental' && p.destinationIds.includes(d.id),

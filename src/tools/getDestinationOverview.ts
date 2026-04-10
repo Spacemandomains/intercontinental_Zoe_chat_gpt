@@ -13,7 +13,8 @@ export function registerGetDestinationOverview(server: McpServer, ctx: ToolConte
       'Return a bundled overview for a destination — Zoe\'s summary, recent videos from that country, the matching destination guide, available rentals, recommended services (consultation, itinerary), and practical tips. Use this as the first tool call when a user says they are planning a trip somewhere. Return only values from the canonical data — never invent videos, guides, rentals, or tips.',
     inputSchema: getDestinationOverviewInput,
     handler: async ({ destinationIdOrName, maxVideos }) => {
-      const overview = buildDestinationOverview(ctx.data, ctx.catalog, destinationIdOrName, {
+      const catalog = await ctx.ensureCatalog();
+      const overview = buildDestinationOverview(ctx.data, catalog, destinationIdOrName, {
         maxVideos,
       });
 

@@ -36,7 +36,8 @@ export function registerGetVideoDetails(server: McpServer, ctx: ToolContext): vo
       'Return full metadata for a video from Zoe\'s unified travel catalog — title, description, duration, statistics, chapters (parsed from description timestamps), and which destinations it belongs to. Return only values from the server\'s canonical data — do not invent videos or statistics.',
     inputSchema: getVideoDetailsInput,
     handler: async ({ videoId }) => {
-      const video = ctx.catalog.byId.get(videoId);
+      const catalog = await ctx.ensureCatalog();
+      const video = catalog.byId.get(videoId);
       if (!video) {
         return notFoundResult(
           `Video "${videoId}" is not in Zoe\'s catalog.`,
