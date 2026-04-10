@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Intercontinental Zoe — MCP server</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        max-width: 640px;
+        margin: 4rem auto;
+        padding: 0 1.25rem;
+        color: #222;
+        line-height: 1.55;
+      }
+      code {
+        background: #f4f4f4;
+        padding: 0.1rem 0.35rem;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+      ul { padding-left: 1.25rem; }
+    </style>
+  </head>
+  <body>
+    <h1>Intercontinental Zoe — MCP server</h1>
+    <p>
+      This is an API-only MCP (Model Context Protocol) server for the travel
+      YouTuber <em>Intercontinental Zoe</em>. There is no user-facing website
+      here — all requests are handled by the serverless function at
+      <code>api/[...path].ts</code>.
+    </p>
+    <p>Useful endpoints:</p>
+    <ul>
+      <li><code>GET /healthz</code> — liveness probe</li>
+      <li><code>GET /openapi.json</code> — OpenAPI 3.1 spec for ChatGPT Custom GPT Actions</li>
+      <li><code>POST /mcp</code> — MCP Streamable HTTP transport (Bearer auth)</li>
+      <li><code>POST /actions/:tool</code> — REST mirror of every MCP tool (Bearer auth)</li>
+    </ul>
+    <p>
+      See the repository README for deployment and client setup instructions.
+    </p>
+  </body>
+</html>
