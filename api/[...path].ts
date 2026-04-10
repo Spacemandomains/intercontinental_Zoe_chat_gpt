@@ -95,8 +95,12 @@ export default async function handler(
 // the YouTube catalog on the first tool call. 60s is the Pro tier maxDuration;
 // Hobby tier is capped at 10s and will time out on the FIRST YouTube tool
 // invocation of a cold container — see docs/vercel-deploy.md.
+//
+// Note: `runtime` must be one of 'edge' | 'experimental-edge' | 'nodejs'.
+// The specific Node.js version is controlled by `engines.node` in package.json
+// (">=20"), not by this string.
 export const config = {
-  runtime: 'nodejs20.x',
+  runtime: 'nodejs',
   maxDuration: 60,
   memory: 1024,
 };
