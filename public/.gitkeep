@@ -1,0 +1,6 @@
+# This file exists so git tracks the empty `public/` directory.
+#
+# Vercel's build pipeline requires an outputDirectory even for pure API
+# projects. vercel.json points it at `public/` and overrides buildCommand
+# to a no-op, so no static files are served here — every request is
+# handled by the serverless function at `api/[...path].ts`.
