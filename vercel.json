@@ -17,6 +17,7 @@
     { "source": "/mcp/:path*", "destination": "/api/mcp/:path*" },
     { "source": "/actions/:tool", "destination": "/api/actions/:tool" },
     { "source": "/actions/:tool/:path*", "destination": "/api/actions/:tool/:path*" },
-    { "source": "/test", "destination": "/api/test" }
+    { "source": "/test", "destination": "/api/test" },
+    { "source": "/privacy", "destination": "/api/privacy" }
   ]
 }
