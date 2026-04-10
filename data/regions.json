@@ -1,7 +1,7 @@
 {
   "North America": ["United States", "Canada", "Mexico"],
   "Central America": ["Belize", "Costa Rica", "Guatemala", "Honduras", "Nicaragua", "Panama", "El Salvador"],
-  "Caribbean": ["Cuba", "Dominican Republic", "Jamaica", "Puerto Rico", "Trinidad and Tobago", "Barbados", "Bahamas"],
+  "Caribbean": ["Cuba", "Dominican Republic", "Jamaica", "Puerto Rico", "Trinidad and Tobago", "Barbados", "Bahamas", "Aruba", "Bonaire", "Curaçao", "British Virgin Islands"],
   "South America": ["Colombia", "Peru", "Brazil", "Argentina", "Chile", "Ecuador", "Bolivia", "Uruguay", "Venezuela"],
   "Western Europe": ["Portugal", "Spain", "France", "Italy", "Germany", "Netherlands", "Belgium", "Switzerland", "Austria", "United Kingdom", "Ireland"],
   "Eastern Europe": ["Poland", "Czech Republic", "Hungary", "Romania", "Bulgaria", "Croatia", "Serbia", "Greece"],
