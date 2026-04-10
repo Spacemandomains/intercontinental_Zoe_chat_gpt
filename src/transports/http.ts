@@ -45,6 +45,39 @@ export function createHttpApp(
     res.json({ ok: true, name: SERVER_NAME, version: SERVER_VERSION });
   });
 
+  // --- Public smoke test ---
+  // Unauthenticated end-to-end check: invokes list_destinations in-process
+  // and returns the result plus latency. Safe to leave public because it
+  // only reads canonical data (no secrets, no mutations, no PII). Callers
+  // do not need to supply any credentials.
+  app.get('/test', async (_req, res) => {
+    const handler = ctx.handlers.get('list_destinations');
+    if (!handler) {
+      res.status(500).json({
+        ok: false,
+        error: 'list_destinations handler not registered',
+      });
+      return;
+    }
+    const start = Date.now();
+    try {
+      const result = await handler({ limit: 5 });
+      res.json({
+        ok: true,
+        latencyMs: Date.now() - start,
+        tool: 'list_destinations',
+        result,
+      });
+    } catch (err) {
+      logger.error({ err: (err as Error).message }, '/test invocation failed');
+      res.status(500).json({
+        ok: false,
+        latencyMs: Date.now() - start,
+        error: (err as Error).message,
+      });
+    }
+  });
+
   // --- OpenAPI spec (for ChatGPT Custom GPT Actions) ---
   app.get('/openapi.json', (req, res) => {
     const host = req.get('host') ?? `localhost:${opts.port}`;
