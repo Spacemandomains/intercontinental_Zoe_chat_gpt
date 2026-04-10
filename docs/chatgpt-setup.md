@@ -12,29 +12,33 @@ handlers in a thin Express adapter.
 
 ## Prerequisites
 
-1. Deploy the HTTP server somewhere reachable from ChatGPT. Fly.io works out of
-   the box with the shipped `Dockerfile` + `fly.toml`:
+1. Deploy the HTTP server to Vercel. The repo ships with a
+   `vercel.json` + `api/[...path].ts` serverless function — no Dockerfile, no
+   long-running process:
    ```bash
-   fly launch --no-deploy --copy-config
-   fly secrets set \
-     YOUTUBE_API_KEY=... \
-     HTTP_AUTH_TOKEN=<a long random token> \
-     RESEND_API_KEY=... \
-     LEAD_EMAIL_TO=you@example.com \
-     LEAD_EMAIL_FROM=zoe@yourdomain.com
-   fly deploy
+   npm install -g vercel
+   vercel link
+   vercel env add YOUTUBE_API_KEY       # YouTube Data API v3 key
+   vercel env add HTTP_AUTH_TOKEN       # long random token (Bearer auth)
+   vercel env add RESEND_API_KEY        # optional: enables start_lead emails
+   vercel env add LEAD_EMAIL_TO         # optional: lead delivery address
+   vercel env add LEAD_EMAIL_FROM       # optional: verified Resend sender
+   vercel --prod
    ```
+   > Use the **Pro** tier if possible — the Hobby tier's 10s function timeout
+   > can clip the first YouTube-tool call on a cold container while it hydrates
+   > 25 playlists in parallel. Canonical-data tools work fine on Hobby.
 2. Verify it's alive:
    ```bash
-   curl https://<app>.fly.dev/healthz
-   curl https://<app>.fly.dev/openapi.json | head
+   curl https://<project>.vercel.app/healthz
+   curl https://<project>.vercel.app/openapi.json | head
    ```
 
 ## Option A — MCP connector (Pro / Team / Enterprise)
 
 1. In ChatGPT: **Settings → Connectors → Add connector → MCP**.
-2. **Server URL:** `https://<app>.fly.dev/mcp`
-3. **Auth:** Bearer token, value = the `HTTP_AUTH_TOKEN` you set on Fly.
+2. **Server URL:** `https://<project>.vercel.app/mcp`
+3. **Auth:** Bearer token, value = the `HTTP_AUTH_TOKEN` you set on Vercel.
 4. Save, then enable the connector in a new chat.
 5. Ask "Where in Southeast Asia has Zoe been?" — ChatGPT should call
    `list_destinations` and ground the answer in canonical data.
@@ -42,8 +46,8 @@ handlers in a thin Express adapter.
 ## Option B — Custom GPT Action (any paid tier)
 
 1. In ChatGPT: **Explore GPTs → Create → Configure → Actions → Create new action**.
-2. **Import from URL:** paste `https://<app>.fly.dev/openapi.json`. ChatGPT will
-   populate the operations (one per tool).
+2. **Import from URL:** paste `https://<project>.vercel.app/openapi.json`.
+   ChatGPT will populate the operations (one per tool).
 3. **Authentication → API Key → Custom → Header name `Authorization`, value
    `Bearer <your HTTP_AUTH_TOKEN>`**. Save.
 4. In the GPT's **Instructions**, paste the contents of `data/guidance.md` so

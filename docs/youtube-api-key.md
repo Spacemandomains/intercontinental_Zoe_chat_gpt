@@ -48,4 +48,5 @@ export YOUTUBE_API_KEY=your-key-here
 ## Rotating the key
 
 If the key leaks: delete it under **Credentials** and create a new one. Update the
-local `.env` or run `fly secrets set YOUTUBE_API_KEY=new-key` on Fly.io.
+local `.env` or run `vercel env rm YOUTUBE_API_KEY production && vercel env add YOUTUBE_API_KEY production`
+then redeploy with `vercel --prod`.

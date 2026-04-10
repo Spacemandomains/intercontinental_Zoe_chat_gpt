@@ -22,11 +22,11 @@ Claude Code supports MCP servers both over stdio (local) and over HTTP (remote).
 
 ## Remote (HTTP + Bearer auth)
 
-Assuming the server is deployed to Fly.io (see root `README.md`):
+Assuming the server is deployed to Vercel (see root `README.md`):
 
 ```bash
 claude mcp add intercontinental-zoe \
-  --transport http https://<app>.fly.dev/mcp \
+  --transport http https://<project>.vercel.app/mcp \
   --header "Authorization: Bearer <your HTTP_AUTH_TOKEN>"
 ```
 

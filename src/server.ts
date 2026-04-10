@@ -1,6 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { loadCanonicalData } from './data/loader.js';
-import { buildCatalog } from './youtube/catalog.js';
+import { buildCatalog, emptyCatalog, type Catalog } from './youtube/catalog.js';
 import { registerAllTools } from './tools/index.js';
 import { registerGuidanceResource } from './resources/guidance.js';
 import type { ToolContext, ToolHandler } from './tools/types.js';
@@ -15,7 +15,17 @@ export interface ServerHandle {
   context: ToolContext;
 }
 
-export async function createServer(): Promise<ServerHandle> {
+export interface CreateServerOptions {
+  /**
+   * If true, eagerly hydrate the YouTube catalog before returning.
+   * Defaults to false so serverless cold starts aren't blocked on YouTube
+   * API calls. Long-running deploys (stdio, Fly/Render-style) can pass
+   * `{ eagerCatalog: true }` to fail fast if YouTube is unreachable.
+   */
+  eagerCatalog?: boolean;
+}
+
+export async function createServer(opts: CreateServerOptions = {}): Promise<ServerHandle> {
   const config = getConfig();
 
   logger.info({ dataDir: config.DATA_DIR }, 'loading canonical data');
@@ -30,27 +40,46 @@ export async function createServer(): Promise<ServerHandle> {
     'canonical data loaded',
   );
 
-  logger.info('building YouTube catalog from per-country playlists');
-  const catalog = await buildCatalog(data.destinations);
-  logger.info(
-    {
-      uniqueVideos: catalog.videos.length,
-      destinationsWithVideos: Array.from(catalog.byDestination.entries()).filter(
-        ([, vs]) => vs.length > 0,
-      ).length,
-    },
-    'catalog ready',
-  );
+  // Catalog is lazy by default: cold serverless starts return immediately
+  // and the first tool call that needs YouTube data triggers hydration.
+  let inflight: Promise<Catalog> | null = null;
+  const hydrate = (): Promise<Catalog> => {
+    if (!inflight) {
+      logger.info('hydrating YouTube catalog from per-country playlists');
+      inflight = buildCatalog(context.data.destinations)
+        .then((built) => {
+          context.catalog = built;
+          logger.info(
+            {
+              uniqueVideos: built.videos.length,
+              destinationsWithVideos: Array.from(built.byDestination.entries()).filter(
+                ([, vs]) => vs.length > 0,
+              ).length,
+            },
+            'catalog ready',
+          );
+          return built;
+        })
+        .catch((err) => {
+          // Reset so a later call can retry — don't wedge the server on
+          // a transient YouTube API hiccup.
+          inflight = null;
+          logger.error({ err: (err as Error).message }, 'catalog hydration failed');
+          throw err;
+        });
+    }
+    return inflight;
+  };
 
   const context: ToolContext = {
     data,
-    catalog,
+    catalog: emptyCatalog(),
     handlers: new Map<string, ToolHandler>(),
+    ensureCatalog: () => hydrate(),
     async refreshCatalog() {
       logger.info('refreshing YouTube catalog');
-      const updated = await buildCatalog(context.data.destinations);
-      context.catalog = updated;
-      logger.info({ uniqueVideos: updated.videos.length }, 'catalog refreshed');
+      inflight = null;
+      await hydrate();
     },
     async reloadData() {
       logger.info('reloading canonical data');
@@ -74,6 +103,10 @@ export async function createServer(): Promise<ServerHandle> {
 
   registerAllTools(server, context);
   registerGuidanceResource(server, context);
+
+  if (opts.eagerCatalog) {
+    await hydrate();
+  }
 
   return { server, context };
 }

@@ -13,7 +13,8 @@ export function registerSearchVideos(server: McpServer, ctx: ToolContext): void 
       'Search Intercontinental Zoe\'s unified video catalog by keyword — matches title, description, and tags. Optionally scope to one country by destinationId. Return only videos from the server\'s canonical catalog — do not invent matches.',
     inputSchema: searchVideosInput,
     handler: async (args) => {
-      const results = searchVideos(ctx.catalog.videos, {
+      const catalog = await ctx.ensureCatalog();
+      const results = searchVideos(catalog.videos, {
         query: args.query,
         destinationId: args.destinationId,
         limit: args.limit,

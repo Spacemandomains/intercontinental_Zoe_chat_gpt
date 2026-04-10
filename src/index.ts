@@ -15,7 +15,10 @@ async function main(): Promise<void> {
   loadConfig();
   const config = getConfig();
 
-  const { server, context } = await createServer();
+  // Long-running process: eagerly hydrate the catalog so the first tool
+  // call is fast and so the process fails loudly if YouTube is misconfigured.
+  // Serverless deployments (Vercel) use lazy hydration via createServer().
+  const { server, context } = await createServer({ eagerCatalog: true });
 
   // SIGHUP: reload canonical data + rebuild the YouTube catalog without
   // restarting the process. Useful when editing data/destinations.json.

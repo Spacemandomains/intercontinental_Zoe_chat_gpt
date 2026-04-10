@@ -33,10 +33,14 @@ per-country YT ─► catalog builder ─► unified Catalog ─► ToolContext
 - **One set of handlers.** Every tool registers itself both with the MCP server and
   into `ctx.handlers`. The REST `/actions/:toolName` mirror reuses the exact same
   validated handler — no JSON-RPC re-dispatch.
-- **One canonical data set.** Loaded once at startup, validated with zod, reloaded
-  on `SIGHUP` so Zoe can edit `data/*.json` without a restart.
-- **One unified YouTube catalog.** Every destination's `playlistId` is fetched at
-  startup and merged; each video is tagged with the destinations it belongs to.
+- **One canonical data set.** Loaded once per container, validated with zod,
+  reloaded on `SIGHUP` (long-running deploys) so Zoe can edit `data/*.json`
+  without a restart.
+- **One unified YouTube catalog.** Every destination's `playlistId` is fetched
+  in parallel and merged; each video is tagged with the destinations it belongs
+  to. Built **lazily** on serverless (Vercel) so cold starts aren't blocked on
+  YouTube — hydration triggers on the first video-tool call, and subsequent
+  warm invocations reuse the cached catalog.
 
 ## Tools (11)
 
@@ -116,23 +120,43 @@ See `docs/data-authoring.md` for the editing workflow and SIGHUP hot reload.
 - ChatGPT (MCP connector + Custom GPT Actions): `docs/chatgpt-setup.md`
 - YouTube API key: `docs/youtube-api-key.md`
 
-## Deployment
+## Deployment (Vercel)
 
-Fly.io is the default target:
+The server ships with a single Vercel serverless function at `api/[...path].ts`
+and a `vercel.json` that rewrites `/mcp`, `/actions/:tool`, `/openapi.json`, and
+`/healthz` onto it. No Dockerfile, no long-running process, no Fly.io.
 
 ```bash
-fly launch --no-deploy --copy-config
-fly secrets set YOUTUBE_API_KEY=... HTTP_AUTH_TOKEN=... \
-                RESEND_API_KEY=... LEAD_EMAIL_TO=... LEAD_EMAIL_FROM=...
-fly deploy
+npm install -g vercel
+vercel link                          # link this repo to a Vercel project
+vercel env add YOUTUBE_API_KEY       # paste your YouTube Data API v3 key
+vercel env add HTTP_AUTH_TOKEN       # long random token used as Bearer auth
+vercel env add RESEND_API_KEY        # optional: enables start_lead emails
+vercel env add LEAD_EMAIL_TO         # optional: where Zoe receives leads
+vercel env add LEAD_EMAIL_FROM       # optional: verified Resend sender
+vercel --prod                        # deploy to production
 ```
 
 After deploy the server is reachable at:
 
-- `https://<app>.fly.dev/mcp` — MCP Streamable HTTP
-- `https://<app>.fly.dev/actions/<tool>` — REST mirror (Bearer-auth)
-- `https://<app>.fly.dev/openapi.json` — OpenAPI 3.1 for Custom GPT import
-- `https://<app>.fly.dev/healthz` — health probe
+- `https://<project>.vercel.app/mcp` — MCP Streamable HTTP
+- `https://<project>.vercel.app/actions/<tool>` — REST mirror (Bearer-auth)
+- `https://<project>.vercel.app/openapi.json` — OpenAPI 3.1 for Custom GPT import
+- `https://<project>.vercel.app/healthz` — health probe
+
+### Cold-start behavior
+
+The function uses **lazy catalog hydration**: cold starts only load the canonical
+JSON (fast), and YouTube playlists are fetched in parallel on the first call to
+a video-related tool (`list_videos`, `search_videos`, `get_video_details`,
+`get_video_transcript`, `get_destination_overview`). Tools that only read
+canonical data (`list_services`, `get_service_details`, `list_products`,
+`list_support_options`, `list_destinations`, `start_lead`) respond in tens of
+milliseconds even on a cold container.
+
+> **Hobby tier caveat:** the first YouTube-tool call on a cold container may
+> exceed the 10s Hobby timeout while hydrating 25 playlists. Use the Pro tier
+> (`maxDuration: 60`) for production deployments.
 
 ## License
 
