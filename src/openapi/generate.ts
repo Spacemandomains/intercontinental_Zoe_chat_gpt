@@ -31,9 +31,9 @@ interface ToolSpec {
 const TOOL_SPECS: readonly ToolSpec[] = [
   {
     name: 'list_videos',
-    summary: "List Zoe's travel videos",
+    summary: "List International Zoe's travel videos",
     description:
-      "List videos from Intercontinental Zoe's unified travel catalog across all per-country playlists. Use destinationId to scope to a single country. Return only values from the server's canonical data.",
+      "List videos from International Zoe's unified travel catalog across all per-country playlists (channel: @INTERNATIONALZOE). Default tool for any generic \"show me videos\", \"what have you filmed\", \"videos from places you've been\", or \"latest uploads\" request — call with no query and no arguments. Use destinationId to scope to a single country. Never call search_videos for a generic browse request. Returns `youtubeUrl` on every item and (when destinationId is passed) a top-level `playlistUrl`. For per-country playlist URLs without scoping, call list_destinations. Return only values from the server's canonical data.",
     input: listVideosInput,
   },
   {
@@ -52,9 +52,9 @@ const TOOL_SPECS: readonly ToolSpec[] = [
   },
   {
     name: 'search_videos',
-    summary: "Search Zoe's travel catalog",
+    summary: "Search International Zoe's travel catalog",
     description:
-      "Search Zoe's unified video catalog by keyword across title, description, and tags. Optionally scope to one destinationId.",
+      'Search International Zoe\'s unified video catalog by EXPLICIT KEYWORD only — matches title, description, and tags. The catalog is drawn from the International Zoe YouTube channel (@INTERNATIONALZOE); "International Zoe" is the canonical catalog keyword. Use ONLY when the user has provided a real search term. For "show me videos" / "what have you filmed" / generic browse requests, call list_videos instead — never fabricate an unrelated query, and never search for "Intercontinental Zoe" (the channel is named International Zoe). Optionally scope to one destinationId; scoped responses include a top-level `playlistUrl`. Unscoped responses include a `playlists` array listing the destinations the matches came from, each with its own `playlistUrl`.',
     input: searchVideosInput,
   },
   {
