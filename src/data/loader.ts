@@ -7,6 +7,7 @@ import {
   servicesFileSchema,
   productsFileSchema,
   supportFileSchema,
+  profileFileSchema,
 } from './schemas.js';
 import type { CanonicalData } from './types.js';
 
@@ -46,14 +47,16 @@ async function readText(path: string): Promise<string> {
 export async function loadCanonicalData(dataDir: string): Promise<CanonicalData> {
   const dir = resolve(dataDir);
 
-  const [destinations, regions, services, products, support, guidance] = await Promise.all([
-    readJson(join(dir, 'destinations.json'), destinationsFileSchema),
-    readJson(join(dir, 'regions.json'), regionsFileSchema),
-    readJson(join(dir, 'services.json'), servicesFileSchema),
-    readJson(join(dir, 'products.json'), productsFileSchema),
-    readJson(join(dir, 'support.json'), supportFileSchema),
-    readText(join(dir, 'guidance.md')),
-  ]);
+  const [destinations, regions, services, products, support, profile, guidance] =
+    await Promise.all([
+      readJson(join(dir, 'destinations.json'), destinationsFileSchema),
+      readJson(join(dir, 'regions.json'), regionsFileSchema),
+      readJson(join(dir, 'services.json'), servicesFileSchema),
+      readJson(join(dir, 'products.json'), productsFileSchema),
+      readJson(join(dir, 'support.json'), supportFileSchema),
+      readJson(join(dir, 'profile.json'), profileFileSchema),
+      readText(join(dir, 'guidance.md')),
+    ]);
 
   // Cross-reference validation: every destination.region must exist in regions.json.
   const validRegions = new Set(Object.keys(regions));
@@ -85,5 +88,5 @@ export async function loadCanonicalData(dataDir: string): Promise<CanonicalData>
     );
   }
 
-  return { destinations, regions, services, products, support, guidance };
+  return { destinations, regions, services, products, support, profile, guidance };
 }

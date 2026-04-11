@@ -8,7 +8,8 @@ or missing, you fix it here — not in the code, not in the prompt.
 
 | File | Contents |
 |---|---|
-| `data/destinations.json` | Array of destinations. One entry per country Zoe has visited. Must include `playlistId` pointing at her per-country YouTube playlist. |
+| `data/destinations.json` | Array of destinations. One entry per country Zoe has visited. Must include `playlistId` pointing at his per-country YouTube playlist. |
+| `data/profile.json` | Zoe's canonical profile: name, pronouns (he/him), gender, bio, and YouTube channel URL. Powers the `get_profile` tool and the `channelUrl` echoed on every video-tool response. |
 | `data/regions.json` | Map of region name → array of country names. Must contain every `region` value referenced from `destinations.json`. |
 | `data/services.json` | Zoe's services (consultation, itinerary, group trip, concierge). Each has price, PayPal link, Crisp chat link, and next-step CTA. |
 | `data/products.json` | Guides, rentals, merchandise. Each has a real URL (Shopify, Airbnb, etc.) and platform. |

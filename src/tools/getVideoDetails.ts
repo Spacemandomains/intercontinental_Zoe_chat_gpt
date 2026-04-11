@@ -37,6 +37,7 @@ export function registerGetVideoDetails(server: McpServer, ctx: ToolContext): vo
     inputSchema: getVideoDetailsInput,
     handler: async ({ videoId }) => {
       const catalog = await ctx.ensureCatalog();
+      const profile = ctx.data.profile;
       const video = catalog.byId.get(videoId);
       if (!video) {
         return notFoundResult(
@@ -63,6 +64,8 @@ export function registerGetVideoDetails(server: McpServer, ctx: ToolContext): vo
 
       return toolResult({
         ok: true,
+        channelUrl: profile.channel.url,
+        channelHandle: profile.channel.handle,
         video: {
           videoId: video.videoId,
           title: video.title,
@@ -81,6 +84,10 @@ export function registerGetVideoDetails(server: McpServer, ctx: ToolContext): vo
           youtubeUrl: `https://www.youtube.com/watch?v=${video.videoId}`,
         },
         nextSteps: [
+          {
+            label: "Visit Zoe's YouTube channel",
+            url: profile.channel.url,
+          },
           {
             label: 'Read the transcript',
             tool: 'get_video_transcript',

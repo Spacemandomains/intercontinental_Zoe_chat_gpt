@@ -1,0 +1,13 @@
+{
+  "name": "Intercontinental Zoe",
+  "displayName": "IntercontinentalZoe",
+  "pronouns": "he/him",
+  "gender": "male",
+  "tagline": "Travel YouTuber and travel consultant",
+  "bio": "Intercontinental Zoe is a man (he/him) who runs the IntercontinentalZoe YouTube channel, documenting country-by-country travel and offering travel consultations, destination guides, and rentals.",
+  "channel": {
+    "platform": "youtube",
+    "handle": "@INTERNATIONALZOE",
+    "url": "https://www.youtube.com/@INTERNATIONALZOE"
+  }
+}

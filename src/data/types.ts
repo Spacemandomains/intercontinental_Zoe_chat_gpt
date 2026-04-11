@@ -8,6 +8,7 @@ export type {
   SupportFile,
   RegionsFile,
   Money,
+  Profile,
 } from './schemas.js';
 
 import type {
@@ -16,6 +17,7 @@ import type {
   Product,
   SupportFile,
   RegionsFile,
+  Profile,
 } from './schemas.js';
 
 export interface CanonicalData {
@@ -24,5 +26,6 @@ export interface CanonicalData {
   services: Service[];
   products: Product[];
   support: SupportFile;
+  profile: Profile;
   guidance: string;
 }

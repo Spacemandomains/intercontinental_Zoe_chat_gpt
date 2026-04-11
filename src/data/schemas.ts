@@ -1,5 +1,24 @@
 import { z } from 'zod';
 
+// ---------- Profile ----------
+
+export const profileSchema = z.object({
+  name: z.string().min(1),
+  displayName: z.string().min(1),
+  pronouns: z.string().min(1),
+  gender: z.string().min(1),
+  tagline: z.string().min(1),
+  bio: z.string().min(1),
+  channel: z.object({
+    platform: z.string().min(1),
+    handle: z.string().min(1),
+    url: z.string().url(),
+  }),
+});
+export type Profile = z.infer<typeof profileSchema>;
+
+export const profileFileSchema = profileSchema;
+
 // ---------- Shared ----------
 
 export const moneySchema = z.object({
