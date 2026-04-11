@@ -53,9 +53,32 @@ handlers in a thin Express adapter.
 4. In the GPT's **Instructions**, paste the contents of `data/guidance.md` so
    the GPT is aware of the grounding rules up front. (Custom GPTs cannot read
    MCP resources automatically — the system prompt is the substitute.)
-5. Optional but recommended: in the **Knowledge / Conversation starters** fields,
-   add the six canonical prompts listed in the root README. They make the sales
-   funnel obvious to first-time visitors.
+5. In the GPT's **Conversation starters** field, paste the four canonical
+   starters below (also stored verbatim in
+   `data/conversation-starters.json`). They're ordered to mirror the
+   starter cards shown in the GPT store:
+
+   1. ```
+      I'm in Lima for a few days. Show me how to move through the city like a local — which neighborhoods to base myself in, the food I shouldn't miss, how to get around safely, and which of Zoe's Lima videos I should watch first. Share the full Lima playlist link too.
+      ```
+   2. ```
+      I want to understand a city through its food, rhythms, and neighborhoods — not its landmarks. Pick one destination Zoe has actually filmed, and walk me through it the way he'd show it on camera: where to eat, where to wander, what to listen for, and the videos that best capture that feeling.
+      ```
+   3. ```
+      Design me a day that feels intentional, not touristy, in a destination Zoe has filmed. Mix a neighborhood walk, one memorable local meal, and something quiet — then tell me which of Zoe's videos match the vibe of the day you designed so I can watch them before I go.
+      ```
+   4. ```
+      Compare the energy of Tokyo and Paris — not as tourist checklists, but as places to actually move through, eat in, and feel for a week. Then point me at the cities Zoe HAS filmed that come closest to each of those vibes, with links to the playlists so I can watch.
+      ```
+
+   > **Note on starter #4:** Tokyo and Paris are deliberately NOT in Zoe's
+   > destinations catalog. This starter triggers the **Tier 2 general-
+   > knowledge carve-out** documented in `data/guidance.md`: the GPT opens
+   > with a disclaimer that Zoe hasn't filmed there yet, gives a short
+   > experiential comparison from general world knowledge, then pivots
+   > to the cities Zoe HAS documented (Bangkok, Buenos Aires, etc.) with
+   > their `playlistUrl`s and offers `start_lead` so Zoe knows there's
+   > interest in those destinations.
 
 ## Which should I use?
 

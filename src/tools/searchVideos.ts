@@ -4,13 +4,14 @@ import { searchVideosInput } from './schemas.js';
 import { toolResult } from './response.js';
 import { searchVideos } from '../services/search.js';
 import { registerTool } from './registrar.js';
+import { videoUrl } from '../youtube/urls.js';
 
 export function registerSearchVideos(server: McpServer, ctx: ToolContext): void {
   registerTool(server, ctx, {
     name: 'search_videos',
     title: 'Search Zoe\'s travel catalog',
     description:
-      'Search Intercontinental Zoe\'s unified video catalog by keyword — matches title, description, and tags. Optionally scope to one country by destinationId. Return only videos from the server\'s canonical catalog — do not invent matches. Always surface the returned `channelUrl` (Zoe\'s YouTube channel) to the user when they ask about videos.',
+      'Search Intercontinental Zoe\'s unified video catalog by keyword — matches title, description, and tags. Optionally scope to one country by destinationId. Return only videos from the server\'s canonical catalog — do not invent matches. Each match includes a clickable `youtubeUrl`; surface those links verbatim. Always surface the returned `channelUrl` (Zoe\'s YouTube channel) to the user when they ask about videos.',
     inputSchema: searchVideosInput,
     handler: async (args) => {
       const catalog = await ctx.ensureCatalog();
@@ -36,6 +37,7 @@ export function registerSearchVideos(server: McpServer, ctx: ToolContext): void 
           publishedAt: r.video.publishedAt,
           durationSeconds: r.video.durationSeconds,
           thumbnailUrl: r.video.thumbnailUrl,
+          youtubeUrl: videoUrl(r.video.videoId),
           score: r.score,
           snippets: r.snippets,
           destinationIds: r.video.sourceDestinationIds,

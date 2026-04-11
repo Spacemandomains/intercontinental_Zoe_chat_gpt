@@ -4,6 +4,7 @@ import type { CatalogVideo } from '../youtube/types.js';
 import { listVideosInput } from './schemas.js';
 import { toolResult, notFoundResult } from './response.js';
 import { registerTool } from './registrar.js';
+import { playlistUrl, videoUrl } from '../youtube/urls.js';
 
 function sortVideos(videos: CatalogVideo[], sort: 'newest' | 'oldest' | 'longest' | 'shortest'): CatalogVideo[] {
   const copy = videos.slice();
@@ -31,6 +32,7 @@ function summarize(v: CatalogVideo) {
     publishedAt: v.publishedAt,
     durationSeconds: v.durationSeconds,
     thumbnailUrl: v.thumbnailUrl,
+    youtubeUrl: videoUrl(v.videoId),
     destinationIds: v.sourceDestinationIds,
   };
 }
@@ -40,12 +42,13 @@ export function registerListVideos(server: McpServer, ctx: ToolContext): void {
     name: 'list_videos',
     title: "List Zoe's travel videos",
     description:
-      "List videos from Intercontinental Zoe's unified travel catalog across all per-country playlists. Use destinationId to scope to a single country. Return only values from the server's canonical data — do not invent videos. Always surface the returned `channelUrl` (Zoe's YouTube channel) to the user when they ask about videos.",
+      "List videos from Intercontinental Zoe's unified travel catalog across all per-country playlists. Use destinationId to scope to a single country. Return only values from the server's canonical data — do not invent videos. Each item in the response includes a clickable `youtubeUrl`; surface those links verbatim to the user. When a destinationId is passed, the response also includes a top-level `playlistUrl` pointing at the full per-country YouTube playlist — always share that link alongside the individual videos.",
     inputSchema: listVideosInput,
     handler: async (args) => {
       const catalog = await ctx.ensureCatalog();
       const profile = ctx.data.profile;
       let pool = catalog.videos;
+      let scopedDestination: { id: string; name: string; playlistId: string } | null = null;
       if (args.destinationId) {
         const bucket = catalog.byDestination.get(args.destinationId);
         if (!bucket) {
@@ -61,10 +64,20 @@ export function registerListVideos(server: McpServer, ctx: ToolContext): void {
           );
         }
         pool = bucket;
+        const destination = ctx.data.destinations.find((d) => d.id === args.destinationId);
+        if (destination) {
+          scopedDestination = {
+            id: destination.id,
+            name: destination.name,
+            playlistId: destination.playlistId,
+          };
+        }
       }
 
       const sorted = sortVideos(pool, args.sort);
       const page = sorted.slice(args.offset, args.offset + args.limit);
+
+      const scopedPlaylistUrl = scopedDestination ? playlistUrl(scopedDestination.playlistId) : null;
 
       return toolResult({
         ok: true,
@@ -75,8 +88,18 @@ export function registerListVideos(server: McpServer, ctx: ToolContext): void {
         destinationId: args.destinationId,
         channelUrl: profile.channel.url,
         channelHandle: profile.channel.handle,
+        playlistId: scopedDestination?.playlistId ?? null,
+        playlistUrl: scopedPlaylistUrl,
         items: page.map(summarize),
         nextSteps: [
+          ...(scopedDestination && scopedPlaylistUrl
+            ? [
+                {
+                  label: `Watch Zoe's full ${scopedDestination.name} playlist on YouTube`,
+                  url: scopedPlaylistUrl,
+                },
+              ]
+            : []),
           {
             label: "Visit Zoe's YouTube channel",
             url: profile.channel.url,

@@ -1,10 +1,16 @@
 {
   "name": "Intercontinental Zoe",
   "displayName": "IntercontinentalZoe",
+  "aliases": [
+    "Global Gallivant",
+    "International Zoe",
+    "Intercontinental Zoe",
+    "IntercontinentalZoe"
+  ],
   "pronouns": "he/him",
   "gender": "male",
   "tagline": "Travel YouTuber and travel consultant",
-  "bio": "Intercontinental Zoe is a man (he/him) who runs the IntercontinentalZoe YouTube channel, documenting country-by-country travel and offering travel consultations, destination guides, and rentals.",
+  "bio": "Intercontinental Zoe — also known as Global Gallivant and International Zoe — is a man (he/him) who runs the @INTERNATIONALZOE YouTube channel, documenting country-by-country travel and offering travel consultations, destination guides, and rentals. All three names refer to the same person and the same brand.",
   "channel": {
     "platform": "youtube",
     "handle": "@INTERNATIONALZOE",

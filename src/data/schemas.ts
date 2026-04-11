@@ -5,6 +5,7 @@ import { z } from 'zod';
 export const profileSchema = z.object({
   name: z.string().min(1),
   displayName: z.string().min(1),
+  aliases: z.array(z.string().min(1)).default([]),
   pronouns: z.string().min(1),
   gender: z.string().min(1),
   tagline: z.string().min(1),
