@@ -25,100 +25,99 @@ reachable at:
 - `https://www.globalgallivant.com/privacy` — public privacy policy (required
   by OpenAI for Custom GPTs with Actions)
 
-The original `*.vercel.app` hostnames continue to work as fallbacks (and are
-still the canonical URL for preview deployments on every PR).
+The original `*.vercel.app` hostnames continue to work as fallbacks (and
+remain the canonical URL for preview deployments on every PR).
 
 ## 2. Ownership split
 
 - **Domain** `globalgallivant.com` is registered to **International Zoe** at
-  **GoDaddy**. DNS is currently served by GoDaddy's default nameservers.
+  **GoDaddy**. DNS is served by GoDaddy.
 - **Vercel project** `global-gallivant` lives in the `wilfred-lee-jrs-projects`
-  team, which Wilfred owns.
+  Vercel team, which Wilfred owns.
 
-Because these are two different accounts, the approach is to **delegate DNS
-for `globalgallivant.com` to Vercel**: Zoe changes the GoDaddy nameservers
-once, and from then on Wilfred manages every DNS record (apex, www, and
-anything else) from the Vercel dashboard under his own team, without needing
-further access to Zoe's GoDaddy account.
+Because these are two different accounts, the chosen approach is to make
+the smallest possible DNS change at GoDaddy: a **single CNAME record on the
+`www` subdomain**. Everything else on the zone — the apex, email (MX/SPF/
+DKIM/DMARC), any other subdomains Zoe already has — stays exactly as it is
+today at GoDaddy, so there's zero risk to Zoe's existing email or site.
+
+> **Alternative path:** Vercel also offers full nameserver delegation for
+> the whole zone. That gives Wilfred self-serve DNS management from the
+> Vercel dashboard, but it's a heavier one-time change for Zoe and carries
+> real risk to her email unless every existing record is captured and
+> re-created in Vercel DNS first. For this project (an API server that
+> doesn't need flexible DNS) the single-CNAME path is strictly simpler and
+> safer, and it is the primary path this guide describes. The nameserver
+> alternative is documented briefly in section 7.
 
 ## 3. Setup — for the project owner (Wilfred)
 
-### 3a. DNS pre-flight (run BEFORE touching anything)
-
-Before Vercel takes over DNS, inventory every non-default record on the
-zone. Anything not replicated into Vercel DNS in step 3c will silently
-disappear the moment the nameserver swap propagates. **Email records (MX,
-SPF/TXT, DKIM, DMARC) are the most common thing to lose here** — if Zoe
-receives mail at `@globalgallivant.com` via Google Workspace, Zoho,
-Fastmail, or similar, those records MUST be copied over first.
-
-```bash
-dig +noall +answer globalgallivant.com       A AAAA
-dig +noall +answer globalgallivant.com       MX
-dig +noall +answer globalgallivant.com       TXT
-dig +noall +answer _dmarc.globalgallivant.com TXT
-dig +noall +answer google._domainkey.globalgallivant.com TXT   # if on Google Workspace
-dig +noall +answer www.globalgallivant.com   A AAAA CNAME
-```
-
-Also ask Zoe directly whether she uses email on that domain, whether she
-has any other subdomains set up (blog, store, redirects), and what platform
-those point at. Write everything down — this is the authoritative list
-to recreate in step 3c.
-
-### 3b. Add the domains to the Vercel project
+### 3a. Add the subdomain in Vercel
 
 Dashboard path:
 
-1. Open *Vercel → `wilfred-lee-jrs-projects` → `global-gallivant` → Settings →
-   Domains*.
-2. Click *Add*, enter `globalgallivant.com` (the apex), and submit. Adding
-   the apex first is important — it's what causes Vercel to assign
-   nameservers for the whole zone.
-3. When Vercel prompts for a verification method, choose **"Change
-   Nameservers (Recommended)"**. The screen will show two nameservers in
-   the form `nsX.vercel-dns.com`. **Copy these two values** — you'll hand
-   them to Zoe in step 3d. The pair is team-specific, so don't assume
-   `ns1`/`ns2`.
-4. Click *Add* again and add `www.globalgallivant.com`. Mark it as the
-   primary domain and configure the apex (`globalgallivant.com`) to
-   *Redirect to www.globalgallivant.com* with a 308 permanent redirect.
+1. Open *Vercel → `wilfred-lee-jrs-projects` → `global-gallivant` → Settings
+   → Domains*.
+2. Click *Add*, enter `www.globalgallivant.com`, and submit.
+3. When Vercel prompts for a verification method, choose **"Add DNS
+   Records"** (not "Change Nameservers"). Vercel will display one CNAME
+   record for Zoe to add at GoDaddy:
 
-CLI equivalents (optional — requires `vercel login` first):
+   | Type  | Name | Value                                     |
+   |-------|------|-------------------------------------------|
+   | CNAME | www  | `110deb4d9bdb4bcb.vercel-dns-017.com.`    |
+
+   Vercel will show "Invalid Configuration" next to the entry until the
+   CNAME is live at GoDaddy and has propagated. That's expected.
+
+CLI equivalent (optional — requires `vercel login` first):
 
 ```bash
-vercel domains add globalgallivant.com --scope wilfred-lee-jrs-projects
 vercel domains add www.globalgallivant.com global-gallivant \
   --scope wilfred-lee-jrs-projects
 ```
 
-Vercel will show "Invalid Configuration" next to both entries until DNS
-propagates in step 3e. That's expected and harmless.
+### 3b. Hand off to Zoe
 
-### 3c. Pre-populate Vercel DNS (BEFORE Zoe flips nameservers)
+Forward the message in section 4 below to Zoe. She adds one CNAME record at
+GoDaddy and that's it — no nameserver changes, no email impact, no
+coordination after that.
 
-In the Vercel dashboard, open the DNS tab for `globalgallivant.com` and
-recreate every non-default record captured in step 3a. Vercel will create
-the A/CNAME entries for the apex and `www` subdomain automatically once the
-project domain is attached — everything else (MX, SPF TXT, DKIM, DMARC,
-other subdomains, etc.) has to be added by hand.
+### 3c. (Optional) Apex redirect
 
-Double-check that the MX/SPF/DKIM/DMARC records match Zoe's current email
-provider exactly. This is the step that saves Zoe's inbox.
+If you also want the bare apex `globalgallivant.com` to serve the MCP
+server (e.g. redirect to `www.globalgallivant.com`), there are two extra
+steps:
 
-### 3d. Handoff to Zoe
+1. In Vercel: *global-gallivant → Settings → Domains → Add* →
+   `globalgallivant.com` → once attached, click the `⋯` menu and choose
+   *Redirect to `www.globalgallivant.com` (308)*.
+2. Ask Zoe to add one more record at GoDaddy:
 
-Paste the message in section 4 below into an email or DM to Zoe, **after**
-filling in the two `nsX.vercel-dns.com` values you copied in step 3b (the
-placeholders in the template are `NS1_PLACEHOLDER` and `NS2_PLACEHOLDER`).
+   | Type | Name | Value         |
+   |------|------|---------------|
+   | A    | @    | `76.76.21.21` |
 
-### 3e. Wait for propagation and cert issuance
+   (`76.76.21.21` is Vercel's anycast apex IP.) **Important:** if Zoe uses
+   email on `@globalgallivant.com` and currently has an A record on `@`
+   pointing somewhere else, do NOT change it without confirming that
+   incoming mail still routes via MX records (MX takes priority over A for
+   mail delivery, so normally this is fine, but double-check the MX records
+   first).
 
-After Zoe saves the nameserver change at GoDaddy:
+If you don't need the apex to resolve at all, skip this section entirely —
+visitors hitting `https://globalgallivant.com` directly will just see
+whatever GoDaddy's apex currently serves (a parked page, or nothing).
 
-- Nameserver delegation usually propagates in **15 minutes to 4 hours**,
-  worst case 48 hours. Track with `dig NS globalgallivant.com` — once the
-  answer section shows `nsX.vercel-dns.com` entries, delegation is live.
+### 3d. Wait and verify
+
+After Zoe saves the CNAME at GoDaddy:
+
+- Propagation is typically **5–30 minutes** for a single CNAME change,
+  worst case ~4 hours. Track with
+  `dig +short www.globalgallivant.com` — as soon as it returns something
+  ending in `.vercel-dns-017.com.` followed by Vercel anycast IPs, DNS is
+  live.
 - Vercel auto-provisions a Let's Encrypt certificate within ~1 minute of
   DNS resolving. The *Domains* tab will flip from "Invalid Configuration"
   to "Valid" without any further action.
@@ -127,60 +126,65 @@ Then run the verification checklist in section 5.
 
 ## 4. Handoff message — for the domain owner (International Zoe)
 
-Paste this into an email or DM to Zoe after filling in the two
-`nsX.vercel-dns.com` values. It's intentionally short and non-technical.
+Paste this into an email or DM to Zoe. It's intentionally short and
+non-technical.
 
-> Hey Zoe — to finish hooking up the new globalgallivant.com site/API I've
-> been building for you, I need you to change one thing in your GoDaddy
-> account. It'll take about 60 seconds. No other settings need to change
-> and your email will keep working exactly the same.
+> Hey Zoe — to finish hooking up the new www.globalgallivant.com site/API
+> I've been building for you, I need you to add one DNS record in your
+> GoDaddy account. It's a single row, takes about 30 seconds, and won't
+> affect your email or anything else on the domain.
 >
 > **What you need to do**
 >
 > 1. Sign in to GoDaddy.
 > 2. Go to *My Products* → *Domains* → click **globalgallivant.com**.
-> 3. Find the *DNS* (or *Manage DNS*) section, then scroll to *Nameservers*.
-> 4. Click *Change* → choose **"I'll use my own nameservers"** (sometimes
->    labeled "Custom").
-> 5. Delete GoDaddy's default nameservers and enter these two instead:
->    - `NS1_PLACEHOLDER`
->    - `NS2_PLACEHOLDER`
-> 6. Click *Save*. GoDaddy will show a warning about leaving GoDaddy DNS —
->    that's expected, go ahead and confirm.
+> 3. Open the *DNS* (or *Manage DNS*) section. You'll see a table of DNS
+>    records.
+> 4. Click *Add* (or *Add New Record*) and enter exactly this:
+>    - **Type:** `CNAME`
+>    - **Name:** `www`
+>    - **Value / Points to:** `110deb4d9bdb4bcb.vercel-dns-017.com.`
+>      *(including the trailing dot if GoDaddy accepts it; if GoDaddy
+>      rejects the trailing dot, drop it — both work)*
+>    - **TTL:** leave the default (1 Hour is fine)
+> 5. Click *Save*.
 >
-> That's it. Within a few hours the new site will be live at
+> That's it. Within a few minutes the new site will be live at
 > **www.globalgallivant.com**, and I'll take it from there.
 >
-> **Will this break my email?** No. I've already copied your email records
-> over to the new DNS so everything keeps routing to the same place.
+> **Will this break my email?** No. This adds a new record on `www` only —
+> your MX records, apex, and everything else on the domain stay exactly as
+> they are.
 >
-> **Can I undo it later?** Yes — in the same screen you can switch back to
-> "GoDaddy default nameservers" at any time and DNS comes back to you. Let
-> me know if you ever want to do that.
+> **Can I undo it later?** Yes — in the same DNS screen you can delete the
+> `www` CNAME record at any time and the `www.globalgallivant.com` site
+> stops resolving. Let me know if you ever want to do that.
 
 ## 5. Verification (after propagation)
 
-Run these from any shell once `dig NS globalgallivant.com` shows the Vercel
-nameservers. The `HTTP_AUTH_TOKEN` used below is the same one set via
+Run these from any shell once `dig +short www.globalgallivant.com` returns
+a `.vercel-dns-017.com.` target plus Vercel anycast IPs. The
+`HTTP_AUTH_TOKEN` used below is the same one set via
 `vercel env add HTTP_AUTH_TOKEN` during initial deployment.
 
 ```bash
-# 1. Nameserver delegation took effect.
-dig NS globalgallivant.com
+# 1. CNAME resolves to Vercel.
+dig www.globalgallivant.com CNAME +short
+# expected: 110deb4d9bdb4bcb.vercel-dns-017.com.
 
-# 2. www resolves to Vercel.
+# 2. Full resolution chain ends at Vercel anycast IPs.
 dig +short www.globalgallivant.com
 
-# 3. Email records still present (sanity check — compare to the pre-flight
-#    snapshot from section 3a).
+# 3. Zoe's email records are untouched (sanity check — MX should be
+#    exactly what it was before).
 dig +short MX globalgallivant.com
 
 # 4. Health probe on the custom domain.
 curl -sI https://www.globalgallivant.com/healthz
 
-# 5. OpenAPI server URL reflects the custom domain (this is the key check —
+# 5. OpenAPI server URL reflects the custom domain. This is the key check —
 #    it confirms the dynamic Host-header path in src/transports/http.ts is
-#    working end-to-end).
+#    working end-to-end.
 curl -s https://www.globalgallivant.com/openapi.json \
   | jq '.servers[0].url'
 # expected: "https://www.globalgallivant.com"
@@ -193,53 +197,79 @@ curl -sH "Authorization: Bearer $HTTP_AUTH_TOKEN" \
   -H 'content-type: application/json' \
   https://www.globalgallivant.com/actions/list_destinations \
   -d '{"limit":3}'
-
-# 8. Apex redirect works.
-curl -sI https://globalgallivant.com
-# expected: HTTP/2 308, location: https://www.globalgallivant.com/
 ```
 
-In the Vercel dashboard, *global-gallivant → Settings → Domains* should show
-both `globalgallivant.com` and `www.globalgallivant.com` with a green
-"Valid Configuration" status and a Let's Encrypt certificate issued within
-the last minute.
+In the Vercel dashboard, *global-gallivant → Settings → Domains* should
+show `www.globalgallivant.com` with a green "Valid Configuration" status
+and a Let's Encrypt certificate issued within the last minute.
 
 **If step 5 fails** (i.e. `servers[0].url` still shows a `*.vercel.app`
-host): the request didn't arrive with the custom `Host` header. Confirm the
-Vercel domain attachment is complete and retry — no code change should be
-required.
+host): the request didn't arrive with the custom `Host` header. Confirm
+Vercel's domain attachment is complete and the CNAME has fully propagated,
+then retry — no code change should be required.
 
 ## 6. Rollback
 
-Two levels, depending on what you're rolling back:
+To detach the custom domain, do **both** of the following:
 
-**Fast (keep DNS on Vercel, just detach the domain from this project):**
-In the Vercel dashboard, *Settings → Domains*, click the `⋯` menu on
-`www.globalgallivant.com` and/or `globalgallivant.com` and choose *Remove*.
-The `*.vercel.app` hostnames keep working — no deploy needed, no DNS
-changes. Vercel still owns DNS for the zone, so email and any other
-records you pre-populated keep working.
+1. **In Vercel**, *global-gallivant → Settings → Domains*, click the `⋯`
+   menu on `www.globalgallivant.com` and choose *Remove*. The
+   `*.vercel.app` hostnames keep working — no deploy needed.
+2. **Ask Zoe to delete the `www` CNAME record** at GoDaddy (*Manage DNS*
+   → find the `www` CNAME row → *Delete*). Not strictly required — leaving
+   it in place is harmless — but cleaner.
 
-**Full (return DNS to GoDaddy):** before anything else, write down every
-record currently in Vercel DNS so you can recreate them at GoDaddy. Then
-ask Zoe to repeat section 4 but choose "GoDaddy default nameservers"
-instead of "I'll use my own nameservers". Propagation and record recovery
-take the same 15 minutes to 48 hours as the forward cutover.
+## 7. Advanced alternative: nameserver delegation
 
-## 7. Why nothing changes in `vercel.json` or source code
+Documented here for completeness. **Do not use this path unless you have a
+specific reason to want Wilfred to own DNS for the whole zone.** It's
+strictly more risky than section 3 because it touches every record on the
+domain, not just `www`.
+
+If you ever do need it:
+
+1. In Vercel (*Settings → Domains → Add*), add `globalgallivant.com` (the
+   apex) and choose **"Change Nameservers (Recommended)"** instead of "Add
+   DNS Records". Vercel will show these two nameservers:
+   - `ns1.vercel-dns.com`
+   - `ns2.vercel-dns.com`
+2. **Before** asking Zoe to change nameservers, inventory every existing
+   DNS record on the zone and recreate it in Vercel DNS by hand:
+
+   ```bash
+   dig +noall +answer globalgallivant.com       A AAAA
+   dig +noall +answer globalgallivant.com       MX
+   dig +noall +answer globalgallivant.com       TXT
+   dig +noall +answer _dmarc.globalgallivant.com TXT
+   dig +noall +answer google._domainkey.globalgallivant.com TXT
+   dig +noall +answer www.globalgallivant.com   A AAAA CNAME
+   ```
+
+   Any MX/SPF/DKIM/DMARC records not recreated in Vercel DNS *before*
+   nameserver propagation will silently break email. This is the reason
+   section 3's CNAME-only path is preferred.
+3. Ask Zoe to change GoDaddy's nameservers to `ns1.vercel-dns.com` /
+   `ns2.vercel-dns.com` in *My Products → Domains → globalgallivant.com
+   → DNS → Nameservers → Change → "I'll use my own nameservers"*.
+
+Rolling this back means asking Zoe to switch GoDaddy nameservers back to
+"GoDaddy default nameservers" in the same screen, and pre-populating any
+DNS changes back at GoDaddy first.
+
+## 8. Why nothing changes in `vercel.json` or source code
 
 - `vercel.json` — Vercel intentionally does not let you configure domain
   attachment from the repo config. Domain ownership lives in the project
-  settings (and the DNS zone lives in Vercel DNS). Leaving `vercel.json`
-  alone is the right answer.
-- `src/transports/http.ts` — the `/openapi.json` handler builds the base URL
-  from `req.get('host')` + `x-forwarded-proto` on every request (around line
-  214), so once Vercel routes the custom domain to the function the OpenAPI
-  spec will automatically advertise `https://www.globalgallivant.com`
-  without any code change. Default `cors()` (around line 151) is already
-  permissive, so no Origin allowlist needs updating.
+  settings. Leaving `vercel.json` alone is the right answer.
+- `src/transports/http.ts` — the `/openapi.json` handler builds the base
+  URL from `req.get('host')` + `x-forwarded-proto` on every request
+  (around line 214), so once Vercel routes the custom domain to the
+  function the OpenAPI spec will automatically advertise
+  `https://www.globalgallivant.com` without any code change. Default
+  `cors()` (around line 151) is already permissive, so no Origin allowlist
+  needs updating.
 - `src/openapi/generate.ts` — `generateOpenApiDocument(baseUrl, ...)` takes
   the base URL as a parameter and reflects it back in `servers[0].url`,
-  meaning it's already domain-agnostic. Nothing to change here.
+  so it's already domain-agnostic. Nothing to change here.
 - `api/[...path].ts` — the catch-all handler only strips the `/api` prefix
   Vercel adds; it's host-agnostic. Nothing to change here either.
