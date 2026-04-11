@@ -40,9 +40,9 @@ function summarize(v: CatalogVideo) {
 export function registerListVideos(server: McpServer, ctx: ToolContext): void {
   registerTool(server, ctx, {
     name: 'list_videos',
-    title: "List Zoe's travel videos",
+    title: "List International Zoe's travel videos",
     description:
-      "List videos from Intercontinental Zoe's unified travel catalog across all per-country playlists. Use destinationId to scope to a single country. Return only values from the server's canonical data — do not invent videos. Each item in the response includes a clickable `youtubeUrl`; surface those links verbatim to the user. When a destinationId is passed, the response also includes a top-level `playlistUrl` pointing at the full per-country YouTube playlist — always share that link alongside the individual videos.",
+      "List videos from International Zoe's unified travel catalog across all per-country playlists (channel: @INTERNATIONALZOE). This is the DEFAULT tool for any generic \"show me videos\", \"what have you filmed\", \"videos from places you've been\", \"latest uploads\", or \"browse Zoe's catalog\" request — call it with no query and no arguments to get the newest videos across every country. Use destinationId to scope to a single country. Never call search_videos for a generic browse request. Return only values from the server's canonical data — do not invent videos. Each item in the response includes a clickable `youtubeUrl`; surface those links verbatim to the user. When a destinationId is passed, the response also includes a top-level `playlistUrl` pointing at the full per-country YouTube playlist — always share that link alongside the individual videos. For a full list of per-country playlist URLs without scoping, call list_destinations — every destination returned includes its own `playlistUrl`.",
     inputSchema: listVideosInput,
     handler: async (args) => {
       const catalog = await ctx.ensureCatalog();
