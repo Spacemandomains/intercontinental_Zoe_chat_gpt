@@ -3,6 +3,7 @@ import type { ToolContext } from './types.js';
 import { getVideoDetailsInput } from './schemas.js';
 import { toolResult, notFoundResult } from './response.js';
 import { registerTool } from './registrar.js';
+import { videoUrl } from '../youtube/urls.js';
 
 interface Chapter {
   title: string;
@@ -81,7 +82,7 @@ export function registerGetVideoDetails(server: McpServer, ctx: ToolContext): vo
           tags: video.tags,
           chapters,
           destinations,
-          youtubeUrl: `https://www.youtube.com/watch?v=${video.videoId}`,
+          youtubeUrl: videoUrl(video.videoId),
         },
         nextSteps: [
           {

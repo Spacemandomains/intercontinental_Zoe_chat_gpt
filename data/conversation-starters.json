@@ -1,0 +1,29 @@
+{
+  "description": "Canonical conversation starters for the Global Gallivant / Intercontinental Zoe Custom GPT. Paste each `fullPrompt` value into the ChatGPT Custom GPT 'Conversation starters' field, in order. The `preview` field is what ChatGPT will show on the starter card (it auto-truncates the full prompt); it's included here for reference only.",
+  "starters": [
+    {
+      "id": "lima-like-a-local",
+      "preview": "I'm in Lima for a few days. Show me how to move...",
+      "fullPrompt": "I'm in Lima for a few days. Show me how to move through the city like a local — which neighborhoods to base myself in, the food I shouldn't miss, how to get around safely, and which of Zoe's Lima videos I should watch first. Share the full Lima playlist link too.",
+      "notes": "Uses peru-lima — a real catalog entry. The GPT should call get_destination_overview {destinationIdOrName: 'peru-lima'} and surface the playlistUrl + at least 3 video URLs."
+    },
+    {
+      "id": "city-through-its-rhythms",
+      "preview": "I want to understand a city through its...",
+      "fullPrompt": "I want to understand a city through its food, rhythms, and neighborhoods — not its landmarks. Pick one destination Zoe has actually filmed, and walk me through it the way he'd show it on camera: where to eat, where to wander, what to listen for, and the videos that best capture that feeling.",
+      "notes": "Open-ended. The GPT should call list_destinations, pick a covered destination with rich video content, then get_destination_overview for it and lead with playlistUrl + video URLs."
+    },
+    {
+      "id": "intentional-day",
+      "preview": "Design me a day that feels intentional, not...",
+      "fullPrompt": "Design me a day that feels intentional, not touristy, in a destination Zoe has filmed. Mix a neighborhood walk, one memorable local meal, and something quiet — then tell me which of Zoe's videos match the vibe of the day you designed so I can watch them before I go.",
+      "notes": "The GPT should pick a covered destination (via list_destinations or get_destination_overview), build a day plan grounded in Zoe's content, and surface matching video URLs + the per-country playlist URL."
+    },
+    {
+      "id": "tokyo-paris-energy",
+      "preview": "Compare the energy of Tokyo and Paris—not as...",
+      "fullPrompt": "Compare the energy of Tokyo and Paris — not as tourist checklists, but as places to actually move through, eat in, and feel for a week. Then point me at the cities Zoe HAS filmed that come closest to each of those vibes, with links to the playlists so I can watch.",
+      "notes": "Tokyo and Paris are NOT in Zoe's catalog. This prompt triggers the Tier 2 carve-out in guidance.md: the GPT should (1) call list_destinations to verify, (2) open with the Tier 2 disclaimer, (3) give a short general-knowledge comparison, (4) pivot to the closest covered cities with their playlistUrls, and (5) offer start_lead so Zoe knows there's demand."
+    }
+  ]
+}

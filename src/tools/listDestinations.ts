@@ -4,6 +4,7 @@ import { listDestinationsInput } from './schemas.js';
 import { toolResult } from './response.js';
 import { filterDestinations } from '../services/destinations.js';
 import { registerTool } from './registrar.js';
+import { playlistUrl } from '../youtube/urls.js';
 
 export function registerListDestinations(server: McpServer, ctx: ToolContext): void {
   registerTool(server, ctx, {
@@ -32,6 +33,7 @@ export function registerListDestinations(server: McpServer, ctx: ToolContext): v
         highlights: d.highlights,
         bestTimeToVisit: d.bestTimeToVisit,
         playlistId: d.playlistId,
+        playlistUrl: playlistUrl(d.playlistId),
         hasGuide: Boolean(d.guideProductId),
         rentalCount: ctx.data.products.filter(
           (p) => p.type === 'rental' && p.destinationIds.includes(d.id),

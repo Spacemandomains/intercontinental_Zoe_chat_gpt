@@ -8,6 +8,7 @@ import { getConfig } from '../config.js';
 import type { VideoTranscript } from '../youtube/types.js';
 import { logger } from '../logger.js';
 import { registerTool } from './registrar.js';
+import { videoUrl } from '../youtube/urls.js';
 
 const transcriptCache = createCache<VideoTranscript>({
   ttl: getConfig().CACHE_TTL_TRANSCRIPT_MS,
@@ -47,7 +48,7 @@ export function registerGetVideoTranscript(server: McpServer, ctx: ToolContext):
           [
             {
               label: 'Watch on YouTube',
-              url: `https://www.youtube.com/watch?v=${videoId}`,
+              url: videoUrl(videoId),
             },
             {
               label: 'Get the video details instead',

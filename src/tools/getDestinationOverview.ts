@@ -4,13 +4,14 @@ import { getDestinationOverviewInput } from './schemas.js';
 import { toolResult, notFoundResult } from './response.js';
 import { buildDestinationOverview } from '../services/overview.js';
 import { registerTool } from './registrar.js';
+import { playlistUrl, videoUrl } from '../youtube/urls.js';
 
 export function registerGetDestinationOverview(server: McpServer, ctx: ToolContext): void {
   registerTool(server, ctx, {
     name: 'get_destination_overview',
     title: 'Full overview for a destination',
     description:
-      'Return a bundled overview for a destination — Zoe\'s summary, recent videos from that country, the matching destination guide, available rentals, recommended services (consultation, itinerary), and practical tips. Use this as the first tool call when a user says they are planning a trip somewhere. Return only values from the canonical data — never invent videos, guides, rentals, or tips.',
+      'Return a bundled overview for a destination — Zoe\'s summary, recent videos from that country, the matching destination guide, available rentals, recommended services (consultation, itinerary), and practical tips. Use this as the first tool call when a user says they are planning a trip somewhere. The response includes the destination\'s top-level `playlistUrl` (full YouTube playlist) and a `youtubeUrl` for each video — always surface the playlist URL and at least a few individual video URLs verbatim in your reply. Return only values from the canonical data — never invent videos, guides, rentals, or tips.',
     inputSchema: getDestinationOverviewInput,
     handler: async ({ destinationIdOrName, maxVideos }) => {
       const catalog = await ctx.ensureCatalog();
@@ -38,11 +39,14 @@ export function registerGetDestinationOverview(server: McpServer, ctx: ToolConte
       }
 
       const { destination, videos, guide, rentals, recommendedServices, tips } = overview;
+      const destinationPlaylistUrl = playlistUrl(destination.playlistId);
 
       return toolResult({
         ok: true,
         channelUrl: profile.channel.url,
         channelHandle: profile.channel.handle,
+        playlistId: destination.playlistId,
+        playlistUrl: destinationPlaylistUrl,
         destination: {
           id: destination.id,
           name: destination.name,
@@ -52,6 +56,8 @@ export function registerGetDestinationOverview(server: McpServer, ctx: ToolConte
           summary: destination.summary,
           highlights: destination.highlights,
           bestTimeToVisit: destination.bestTimeToVisit,
+          playlistId: destination.playlistId,
+          playlistUrl: destinationPlaylistUrl,
         },
         videos: videos.map((v) => ({
           videoId: v.videoId,
@@ -59,7 +65,7 @@ export function registerGetDestinationOverview(server: McpServer, ctx: ToolConte
           publishedAt: v.publishedAt,
           durationSeconds: v.durationSeconds,
           thumbnailUrl: v.thumbnailUrl,
-          youtubeUrl: `https://www.youtube.com/watch?v=${v.videoId}`,
+          youtubeUrl: videoUrl(v.videoId),
         })),
         guide: guide
           ? {
@@ -87,6 +93,10 @@ export function registerGetDestinationOverview(server: McpServer, ctx: ToolConte
         })),
         tips,
         nextSteps: [
+          {
+            label: `Watch Zoe's full ${destination.name} playlist on YouTube`,
+            url: destinationPlaylistUrl,
+          },
           {
             label: "Visit Zoe's YouTube channel",
             url: profile.channel.url,
