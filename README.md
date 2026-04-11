@@ -119,6 +119,7 @@ See `docs/data-authoring.md` for the editing workflow and SIGHUP hot reload.
 - Claude Desktop: `docs/claude-desktop-setup.md`
 - ChatGPT (MCP connector + Custom GPT Actions): `docs/chatgpt-setup.md`
 - YouTube API key: `docs/youtube-api-key.md`
+- Custom domain setup: `docs/custom-domain.md`
 
 ## Deployment (Vercel)
 
@@ -137,12 +138,25 @@ vercel env add LEAD_EMAIL_FROM       # optional: verified Resend sender
 vercel --prod                        # deploy to production
 ```
 
+### Custom domain
+
+The canonical production host is **`www.globalgallivant.com`** (attached to
+the `global-gallivant` project in the `wilfred-lee-jrs-projects` Vercel team).
+The full setup — DNS delegation from GoDaddy to Vercel, the handoff message
+for the domain owner, verification, and rollback — is documented in
+`docs/custom-domain.md`. No source code or `vercel.json` changes are needed
+to add, move, or remove the custom domain: `src/transports/http.ts` derives
+the OpenAPI base URL from the incoming `Host` header at request time.
+
 After deploy the server is reachable at:
 
-- `https://<project>.vercel.app/mcp` — MCP Streamable HTTP
-- `https://<project>.vercel.app/actions/<tool>` — REST mirror (Bearer-auth)
-- `https://<project>.vercel.app/openapi.json` — OpenAPI 3.1 for Custom GPT import
-- `https://<project>.vercel.app/healthz` — health probe
+- `https://www.globalgallivant.com/mcp` — MCP Streamable HTTP
+- `https://www.globalgallivant.com/actions/<tool>` — REST mirror (Bearer-auth)
+- `https://www.globalgallivant.com/openapi.json` — OpenAPI 3.1 for Custom GPT import
+- `https://www.globalgallivant.com/healthz` — health probe
+
+The original `https://<project>.vercel.app/*` hostnames continue to work as
+fallbacks and remain the canonical URL for preview deployments on every PR.
 
 ### Cold-start behavior
 
