@@ -14,6 +14,7 @@ export function registerGetDestinationOverview(server: McpServer, ctx: ToolConte
     inputSchema: getDestinationOverviewInput,
     handler: async ({ destinationIdOrName, maxVideos }) => {
       const catalog = await ctx.ensureCatalog();
+      const profile = ctx.data.profile;
       const overview = buildDestinationOverview(ctx.data, catalog, destinationIdOrName, {
         maxVideos,
       });
@@ -40,6 +41,8 @@ export function registerGetDestinationOverview(server: McpServer, ctx: ToolConte
 
       return toolResult({
         ok: true,
+        channelUrl: profile.channel.url,
+        channelHandle: profile.channel.handle,
         destination: {
           id: destination.id,
           name: destination.name,
@@ -84,6 +87,10 @@ export function registerGetDestinationOverview(server: McpServer, ctx: ToolConte
         })),
         tips,
         nextSteps: [
+          {
+            label: "Visit Zoe's YouTube channel",
+            url: profile.channel.url,
+          },
           ...(guide
             ? [
                 {

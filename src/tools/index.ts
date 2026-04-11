@@ -12,8 +12,12 @@ import { registerGetServiceDetails } from './getServiceDetails.js';
 import { registerListProducts } from './listProducts.js';
 import { registerListSupportOptions } from './listSupportOptions.js';
 import { registerStartLead } from './startLead.js';
+import { registerGetProfile } from './getProfile.js';
 
 export function registerAllTools(server: McpServer, ctx: ToolContext): void {
+  // Profile (1)
+  registerGetProfile(server, ctx);
+
   // YouTube (4)
   registerListVideos(server, ctx);
   registerGetVideoDetails(server, ctx);
@@ -34,6 +38,7 @@ export function registerAllTools(server: McpServer, ctx: ToolContext): void {
 
 /** Stable list of tool names for the REST /actions mirror and OpenAPI generator. */
 export const ALL_TOOL_NAMES = [
+  'get_profile',
   'list_videos',
   'get_video_details',
   'get_video_transcript',

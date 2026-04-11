@@ -10,10 +10,11 @@ export function registerSearchVideos(server: McpServer, ctx: ToolContext): void 
     name: 'search_videos',
     title: 'Search Zoe\'s travel catalog',
     description:
-      'Search Intercontinental Zoe\'s unified video catalog by keyword — matches title, description, and tags. Optionally scope to one country by destinationId. Return only videos from the server\'s canonical catalog — do not invent matches.',
+      'Search Intercontinental Zoe\'s unified video catalog by keyword — matches title, description, and tags. Optionally scope to one country by destinationId. Return only videos from the server\'s canonical catalog — do not invent matches. Always surface the returned `channelUrl` (Zoe\'s YouTube channel) to the user when they ask about videos.',
     inputSchema: searchVideosInput,
     handler: async (args) => {
       const catalog = await ctx.ensureCatalog();
+      const profile = ctx.data.profile;
       const results = searchVideos(catalog.videos, {
         query: args.query,
         destinationId: args.destinationId,
@@ -26,6 +27,8 @@ export function registerSearchVideos(server: McpServer, ctx: ToolContext): void 
         ok: true,
         query: args.query,
         destinationId: args.destinationId,
+        channelUrl: profile.channel.url,
+        channelHandle: profile.channel.handle,
         total: results.length,
         matches: results.map((r) => ({
           videoId: r.video.videoId,
@@ -38,6 +41,10 @@ export function registerSearchVideos(server: McpServer, ctx: ToolContext): void 
           destinationIds: r.video.sourceDestinationIds,
         })),
         nextSteps: [
+          {
+            label: "Visit Zoe's YouTube channel",
+            url: profile.channel.url,
+          },
           {
             label: 'Get details on a specific result',
             tool: 'get_video_details',

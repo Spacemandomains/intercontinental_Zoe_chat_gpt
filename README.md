@@ -5,8 +5,8 @@ It exposes:
 
 - Zoe's **per-country YouTube playlists** as a single searchable catalog (metadata,
   details, transcripts, keyword search).
-- A **grounded knowledge base** for all destinations she has visited and every service
-  she offers — zero hallucination; every value comes from canonical JSON in `data/`.
+- A **grounded knowledge base** for all destinations he has visited and every service
+  he offers — zero hallucination; every value comes from canonical JSON in `data/`.
 - A **natural sales funnel** toward travel consultations (PayPal + Crisp live chat),
   destination guides (Shopify), Zoe Location rentals (Airbnb + other rental sites),
   merchandise, and contributions.

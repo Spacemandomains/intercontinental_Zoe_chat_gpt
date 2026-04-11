@@ -40,10 +40,11 @@ export function registerListVideos(server: McpServer, ctx: ToolContext): void {
     name: 'list_videos',
     title: "List Zoe's travel videos",
     description:
-      "List videos from Intercontinental Zoe's unified travel catalog across all per-country playlists. Use destinationId to scope to a single country. Return only values from the server's canonical data — do not invent videos.",
+      "List videos from Intercontinental Zoe's unified travel catalog across all per-country playlists. Use destinationId to scope to a single country. Return only values from the server's canonical data — do not invent videos. Always surface the returned `channelUrl` (Zoe's YouTube channel) to the user when they ask about videos.",
     inputSchema: listVideosInput,
     handler: async (args) => {
       const catalog = await ctx.ensureCatalog();
+      const profile = ctx.data.profile;
       let pool = catalog.videos;
       if (args.destinationId) {
         const bucket = catalog.byDestination.get(args.destinationId);
@@ -72,8 +73,14 @@ export function registerListVideos(server: McpServer, ctx: ToolContext): void {
         limit: args.limit,
         sort: args.sort,
         destinationId: args.destinationId,
+        channelUrl: profile.channel.url,
+        channelHandle: profile.channel.handle,
         items: page.map(summarize),
         nextSteps: [
+          {
+            label: "Visit Zoe's YouTube channel",
+            url: profile.channel.url,
+          },
           {
             label: 'Get details for one of these videos',
             tool: 'get_video_details',

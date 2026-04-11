@@ -86,6 +86,8 @@ export const listProductsInput = {
 
 export const listSupportOptionsInput = {} as const;
 
+export const getProfileInput = {} as const;
+
 export const startLeadInput = {
   leadType: z.enum([
     'consultation',

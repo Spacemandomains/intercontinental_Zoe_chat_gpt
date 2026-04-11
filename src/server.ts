@@ -97,7 +97,7 @@ export async function createServer(opts: CreateServerOptions = {}): Promise<Serv
         resources: {},
       },
       instructions:
-        'Intercontinental Zoe MCP server: travel videos, grounded destination knowledge base, and a sales funnel for consultations, guides, rentals, merchandise, and donations. Before answering user questions, read the guidance://system resource for ground rules. Never invent destinations, services, prices, or URLs — always call a tool and use only values returned by the server.',
+        'Intercontinental Zoe MCP server: travel videos, grounded destination knowledge base, and a sales funnel for consultations, guides, rentals, merchandise, and donations. Before answering user questions, read the guidance://system resource for ground rules. Never invent destinations, services, prices, or URLs — always call a tool and use only values returned by the server. Intercontinental Zoe is a man (he/him); always use male pronouns and call `get_profile` before making identity claims. The canonical YouTube channel is https://www.youtube.com/@INTERNATIONALZOE — always surface this link when the user asks about videos.',
     },
   );
 
