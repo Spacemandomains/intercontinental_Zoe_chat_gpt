@@ -2,10 +2,13 @@
   {
     "id": "merch-tshirt",
     "type": "merchandise",
-    "title": "Intercontinental Zoe T-Shirt",
-    "description": "Official tee. Soft cotton, unisex fit, ships worldwide.",
-    "price": { "amount": 32, "currency": "USD" },
-    "url": "https://zoe-shop.example.com/products/zoe-tshirt",
-    "platform": "shopify"
+    "title": "Global Gallivant T-Shirt",
+    "description": "Official Global Gallivant tee by Intercontinental Zoe. Launching July 10, 2026.",
+    "price": {
+      "amount": 0,
+      "currency": "USD"
+    },
+    "url": "https://www.globalgallivant.com/merch",
+    "platform": "direct"
   }
 ]

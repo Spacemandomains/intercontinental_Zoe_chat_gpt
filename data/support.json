@@ -4,14 +4,21 @@
       "id": "paypal-tip",
       "label": "Tip Zoe via PayPal",
       "description": "Send a one-time tip of any amount to support Zoe's travels.",
-      "url": "https://www.paypal.com/paypalme/REPLACE_WITH_PAYPAL_HANDLE",
+      "url": "https://paypal.me/barberworldtv",
       "type": "donation"
+    },
+    {
+      "id": "patreon",
+      "label": "Support on Patreon",
+      "description": "Monthly support for Zoe's travel content.",
+      "url": "https://www.patreon.com/internationalzoe",
+      "type": "subscription"
     },
     {
       "id": "merch-shop",
       "label": "Shop Merchandise",
-      "description": "Every t-shirt, sticker, and accessory directly funds the next trip.",
-      "url": "https://zoe-shop.example.com",
+      "description": "Official Global Gallivant merchandise — launching July 10, 2026.",
+      "url": "https://www.globalgallivant.com/merch",
       "type": "merch"
     }
   ]

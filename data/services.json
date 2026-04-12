@@ -2,31 +2,35 @@
   {
     "id": "consultation",
     "name": "1:1 Travel Consultation",
-    "tagline": "Get a 60-minute video call with Zoe to plan your next trip.",
-    "description": "A live one-on-one video call with Zoe to map out your next international trip — destinations, budget, safety, logistics, and neighborhood-level recommendations based on Zoe's first-hand travels.",
-    "price": { "amount": 149, "currency": "USD" },
-    "duration": "60 minutes",
+    "tagline": "Get a 15-minute video call with Zoe to plan your next trip.",
+    "description": "A focused 15-minute 1-on-1 consultation with Intercontinental Zoe — personalized destination advice, safety tips, budget breakdowns, and itinerary guidance based on his firsthand visits to 50+ countries.",
+    "price": {
+      "amount": 150,
+      "currency": "USD"
+    },
+    "duration": "15 minutes",
     "whatsIncluded": [
-      "60-minute live video call with Zoe",
-      "Personalized destination shortlist based on your goals and budget",
-      "Neighborhood and accommodation recommendations",
+      "15-minute live call with Zoe (video or voice)",
+      "Personalized destination and itinerary advice",
       "Safety briefing and scam-avoidance tips",
-      "Follow-up summary notes delivered within 24 hours"
+      "Budget and logistics guidance"
     ],
     "deliverables": [
-      "Video call recording",
-      "Written summary with links and next steps"
+      "Live call with Zoe"
     ],
-    "paypalPaymentLink": "https://www.paypal.com/paypalme/REPLACE_WITH_PAYPAL_HANDLE/149",
-    "crispChatUrl": "https://go.crisp.chat/chat/embed/?website_id=REPLACE_WITH_CRISP_WEBSITE_ID",
-    "nextStepCta": "Pay via PayPal, then Zoe will reach out via Crisp within 24 hours to schedule your call."
+    "paypalPaymentLink": "https://paypal.me/barberworldtv/150",
+    "crispChatUrl": "https://www.instagram.com/international.zoe",
+    "nextStepCta": "Pay $150 via PayPal, then DM Zoe on Instagram (@international.zoe) or email globalgallivantzoe@gmail.com with your receipt to schedule your slot. No refunds — all sales final."
   },
   {
     "id": "custom-itinerary",
     "name": "Custom Itinerary",
     "tagline": "A fully built day-by-day itinerary for your trip.",
     "description": "Zoe designs a complete day-by-day itinerary for your trip, including accommodations, transport, activities, meals, and budget tracking. No call required.",
-    "price": { "amount": 299, "currency": "USD" },
+    "price": {
+      "amount": 299,
+      "currency": "USD"
+    },
     "duration": "Delivered in 5-7 business days",
     "whatsIncluded": [
       "Day-by-day schedule with times and transport between each stop",
@@ -40,19 +44,22 @@
       "Budget tracker spreadsheet",
       "Google Maps list with all pinned locations"
     ],
-    "paypalPaymentLink": "https://www.paypal.com/paypalme/REPLACE_WITH_PAYPAL_HANDLE/299",
-    "crispChatUrl": "https://go.crisp.chat/chat/embed/?website_id=REPLACE_WITH_CRISP_WEBSITE_ID",
-    "nextStepCta": "Pay via PayPal. Zoe will message you on Crisp within 1 business day to collect your trip details."
+    "paypalPaymentLink": "https://paypal.me/barberworldtv/299",
+    "crispChatUrl": "https://www.instagram.com/international.zoe",
+    "nextStepCta": "Pay via PayPal and DM Zoe on Instagram (@international.zoe) with your receipt and trip details."
   },
   {
     "id": "group-trip",
     "name": "Small Group Trip",
     "tagline": "Join Zoe on a curated small group trip.",
-    "description": "Travel with Zoe and a small group (6-10 people) on a curated multi-day experience. All logistics handled — accommodations, transport, guides, and most meals.",
-    "price": { "amount": 2499, "currency": "USD" },
+    "description": "Travel with Zoe and a small group on a curated multi-day experience. All logistics handled — accommodations, transport, guides, and most meals.",
+    "price": {
+      "amount": 2499,
+      "currency": "USD"
+    },
     "duration": "7-10 days depending on destination",
     "whatsIncluded": [
-      "Small group (6-10 people) led by Zoe",
+      "Small group led by Zoe",
       "Accommodations in boutique hotels or villas",
       "All in-country transport",
       "Most meals",
@@ -63,29 +70,32 @@
       "Welcome dinner and orientation",
       "Professional photography package"
     ],
-    "paypalPaymentLink": "https://www.paypal.com/paypalme/REPLACE_WITH_PAYPAL_HANDLE/2499",
-    "crispChatUrl": "https://go.crisp.chat/chat/embed/?website_id=REPLACE_WITH_CRISP_WEBSITE_ID",
-    "nextStepCta": "Reach out on Crisp first to confirm availability for your desired dates, then pay via PayPal to reserve your spot."
+    "paypalPaymentLink": "https://paypal.me/barberworldtv/2499",
+    "crispChatUrl": "https://www.instagram.com/international.zoe",
+    "nextStepCta": "DM Zoe on Instagram first to confirm availability, then pay via PayPal to reserve your spot."
   },
   {
     "id": "concierge",
     "name": "Trip Concierge",
     "tagline": "On-call support during your trip.",
-    "description": "Zoe is on call via Crisp chat for the duration of your trip to answer questions, troubleshoot issues, and make last-minute recommendations.",
-    "price": { "amount": 99, "currency": "USD" },
+    "description": "Zoe is on call via Instagram DM for the duration of your trip to answer questions, troubleshoot issues, and make last-minute recommendations.",
+    "price": {
+      "amount": 99,
+      "currency": "USD"
+    },
     "duration": "Up to 14 days of trip support",
     "whatsIncluded": [
-      "On-demand chat support via Crisp for 14 days",
+      "On-demand chat support via Instagram DM for 14 days",
       "Restaurant, activity, and logistics recommendations",
       "Help rebooking transport or accommodation",
       "Local emergency contact info"
     ],
     "deliverables": [
-      "Dedicated Crisp chat thread",
+      "Dedicated DM thread",
       "Pre-trip kickoff checklist"
     ],
-    "paypalPaymentLink": "https://www.paypal.com/paypalme/REPLACE_WITH_PAYPAL_HANDLE/99",
-    "crispChatUrl": "https://go.crisp.chat/chat/embed/?website_id=REPLACE_WITH_CRISP_WEBSITE_ID",
-    "nextStepCta": "Pay via PayPal and message Zoe on Crisp to activate your concierge window."
+    "paypalPaymentLink": "https://paypal.me/barberworldtv/99",
+    "crispChatUrl": "https://www.instagram.com/international.zoe",
+    "nextStepCta": "Pay via PayPal and DM Zoe on Instagram (@international.zoe) with your receipt to activate your concierge window."
   }
 ]
