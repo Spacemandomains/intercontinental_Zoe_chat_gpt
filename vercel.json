@@ -6,18 +6,10 @@
   "functions": {
     "api/[...path].ts": {
       "maxDuration": 60,
-      "memory": 1024,
       "includeFiles": "data/**"
     }
   },
   "rewrites": [
-    { "source": "/healthz", "destination": "/api/healthz" },
-    { "source": "/openapi.json", "destination": "/api/openapi.json" },
-    { "source": "/mcp", "destination": "/api/mcp" },
-    { "source": "/mcp/:path*", "destination": "/api/mcp/:path*" },
-    { "source": "/actions/:tool", "destination": "/api/actions/:tool" },
-    { "source": "/actions/:tool/:path*", "destination": "/api/actions/:tool/:path*" },
-    { "source": "/test", "destination": "/api/test" },
-    { "source": "/privacy", "destination": "/api/privacy" }
+    { "source": "/(.*)", "destination": "/api/$1" }
   ]
 }
