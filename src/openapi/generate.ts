@@ -14,6 +14,7 @@ import {
   listProductsInput,
   listSupportOptionsInput,
   startLeadInput,
+  getProfileInput,
 } from '../tools/schemas.js';
 
 /**
@@ -98,6 +99,13 @@ const TOOL_SPECS: readonly ToolSpec[] = [
     description:
       'List all the ways a visitor can support Intercontinental Zoe — donations, Patreon, merchandise, affiliates.',
     input: listSupportOptionsInput,
+  },
+  {
+    name: 'get_profile',
+    summary: "Get Intercontinental Zoe's profile",
+    description:
+      "Return Intercontinental Zoe's canonical profile: name, brand aliases (Global Gallivant, International Zoe), pronouns (he/him), gender, bio, and YouTube channel URL. Call before making any claims about Zoe's identity, pronouns, brand names, or channel.",
+    input: getProfileInput,
   },
   {
     name: 'start_lead',
