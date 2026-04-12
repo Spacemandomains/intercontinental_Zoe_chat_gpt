@@ -12,7 +12,7 @@
       "label": "Support on Patreon",
       "description": "Monthly support for Zoe's travel content.",
       "url": "https://www.patreon.com/internationalzoe",
-      "type": "subscription"
+      "type": "patreon"
     },
     {
       "id": "merch-shop",
