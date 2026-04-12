@@ -10,6 +10,12 @@
     }
   },
   "rewrites": [
-    { "source": "/(.*)", "destination": "/api/$1" }
+    { "source": "/healthz", "destination": "/api/healthz" },
+    { "source": "/openapi.json", "destination": "/api/openapi.json" },
+    { "source": "/mcp", "destination": "/api/mcp" },
+    { "source": "/mcp/:path*", "destination": "/api/mcp/:path*" },
+    { "source": "/actions/:path*", "destination": "/api/actions/:path*" },
+    { "source": "/test", "destination": "/api/test" },
+    { "source": "/privacy", "destination": "/api/privacy" }
   ]
 }
